@@ -1,0 +1,114 @@
+﻿@model IEnumerable<UkazkaRazor.Models.Room>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Index</h1>
+
+<table class="table messages">
+    <tbody>
+        @foreach (var item in (List<Room>)ViewBag.rooms)
+        {
+            if (item.users.Count != 2)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.roomName)
+                        <div id="@item.roomName">
+                            Capacity:@item.users.Count
+                        </div>
+                        <br />
+                        <button type="button" onclick="JoinRoom('@item.roomName')">Join</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<form method="post" onsubmit="AddRoom(event);">
+    @Html.AntiForgeryToken()
+        @Html.TextBox("message")
+    <input type="submit" value="AddRoom" />
+</form>
+<div class="scroll">
+    <ul class="chat">
+       @foreach (var item in (List<ChatMessage>)ViewBag.Chat)
+       {
+           <li>@item.msg</li>
+       }
+    </ul>
+</div>
+<form method="post" onsubmit="AddMessage()">
+    <input class="text"/>
+    <input type="submit" value="AddMessage" />
+</form>
+@section Scripts{
+    <script src="~/lib/signalR/signalr.min.js"></script>
+    <script title="signalR">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+        connection.on("MessageReceived", (message) => {
+            console.log(message);
+            var table = document.querySelector(".messages");
+            var tableRef = table.getElementsByTagName('tbody')[0];
+            var newRow = tableRef.insertRow();
+            var newCell = newRow.insertCell(0);
+            var newText = document.createTextNode(message);
+            var node = document.createElement("DIV");
+            node.id = message;
+            var textNode = document.createTextNode("Capacity:0")
+            node.appendChild(textNode);
+            var button = document.createElement("button");
+            button.innerHTML = "Join";
+            button.addEventListener("click", function () {
+                JoinRoom(message)
+            });
+            var body = document.getElementsByTagName("tbody")[0];
+            body.appendChild(button);
+            newCell.appendChild(newText);
+            newCell.appendChild(node);
+        });
+        connection.on("CapacityUpdate", (capacity, roomName) => {
+            document.getElementById(roomName).innerHTML = "Capacity:" + capacity;
+        });
+        connection.on("PlayerLeave", (fgt) => {
+            location.reload();
+            alert(fgt);
+        })
+        connection.on("UpdateChat", (msg) => {
+          
+            let list = document.getElementsByClassName("chat")[0];
+            let newNode = document.createElement("LI");
+            let textNode = document.createTextNode(msg);
+            newNode.appendChild(textNode);
+            list.appendChild(newNode);
+        });
+        connection.on("Clear", (name, playerO, playerT) => {
+            var wrapper = "wrapper";
+            var top = "top";
+            var wrapperinner = "wrapper-inner"
+            var boxinner = "boxinner";
+            var box = "box";
+            var bottom = "bottom";
+            var blackchecker = "black_checker";
+            var whitechecker = "white_checker";
+            document.getElementsByClassName('container')[1].innerHTML = "<div class=" + wrapper + "> <div class=" + top + "> <div class=" + wrapperinner + "> <div class=" + boxinner + ">A</div> <div class=" + boxinner + ">B</div> <div class=" + boxinner + ">C</div> <div class=" + boxinner + ">D</div> <div class=" + boxinner + ">E</div> <div class=" + boxinner + ">F</div> <div class=" + boxinner + ">G</div> <div class=" + boxinner + ">H</div> </div> </div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + blackchecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + box + "></div> <div class=" + box + "><div class=" + whitechecker + "></div></div> <div class=" + bottom + "> <div class=" + wrapperinner + "> <div class=" + boxinner + ">A</div> <div class=" + boxinner + ">B</div> <div class=" + boxinner + ">C</div> <div class=" + boxinner + ">D</div> <div class=" + boxinner + ">E</div> <div class=" + boxinner + ">F</div> <div class=" + boxinner + ">G</div> <div class=" + boxinner + ">H</div> </div> </div> </div>";
+            getBoard(name, playerO, playerT);
+        });
+        connection.start();
+        function AddRoom(event) {
+            event.preventDefault();
+            connection.invoke("AddRoom", event.target.elements.message.value);
+        };
+        function JoinRoom(roomName) {
+            connection.invoke("JoinRoom", roomName)
+        };
+        function AddMessage() {
+            let msg = document.getElementsByClassName("text")[0].value;
+            connection.invoke("SendMessage",msg)
+        }
+    </script>
+    <script src="~/js/checkers.js"></script>
+}

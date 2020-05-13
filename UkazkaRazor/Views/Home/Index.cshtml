@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<ul>
+    @*{
+        System.DirectoryServices.DirectoryEntry entry = new System.DirectoryServices.DirectoryEntry("LDAP://10.1.1.60/OU=Skola,DC=ssakhk,DC=cz");
+        System.DirectoryServices.DirectorySearcher ds = new System.DirectoryServices.DirectorySearcher();
+        ds.SearchScope = System.DirectoryServices.SearchScope.Subtree;
+        ds.Filter = "(|(objectCategory=organizationalUnit)(cn=Skola))";
+
+        foreach (System.DirectoryServices.SearchResult deResult in ds.FindAll())
+        {
+            <li>@deResult.Path</li>
+        }
+    }*@
+</ul>
+    <table>
+        @{
+            for (var i = 0; i < 10; i++)
+            {
+                <tr>
+                    @{
+                        for (var x = 0; x < 10; x++)
+                        {
+                            <td>
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+    </table>
